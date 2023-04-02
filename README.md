@@ -1,7 +1,7 @@
 # GALAXY SHOOTER
 An airplane shooter game inspired by Galaga. 
 
- ![My Remote Image](./hero.avif)
+ ![My Remote Image](https://assets.nintendo.com/image/upload/ar_16:9,b_auto:border,c_lpad/b_white/f_auto/q_auto/dpr_1.0/c_scale,w_1000/ncom/en_US/games/switch/g/galaxy-shooter-switch/hero)
 
 To play Galaxy Shooter online visit kacyphan7.github.io 
 
