@@ -36,4 +36,4 @@ This project was modeled off of Galaga for nostalgic purposes. It was my favorit
 # PROCESS WORK
 
 ### Initial Wireframes:
- ![My Remote Image](./wireframes/projectSetUp/escalidraw%20wire%20frame.%20png.png)
+ ![My Remote Image](./wireframes/inital%20wireframe.png)
