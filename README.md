@@ -36,6 +36,4 @@ This project was modeled off of Galaga for nostalgic purposes. It was my favorit
 # PROCESS WORK
 
 ### Initial Wireframes:
- ![My Remote Image](./Wireframes/Galaxy%20Shooter%20Start%20Page.png)
-
- ![My Remote Image](./Wireframes/Galaxy%20Shooter%20Game%20Design.png)
+ ![My Remote Image](./wireframes/projectSetUp/escalidraw%20wire%20frame.%20png.png)
