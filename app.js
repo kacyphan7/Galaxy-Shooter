@@ -1,37 +1,34 @@
-class GalaxyShooterGame {
-    constructor() {
-      this.score = 0;
-      this.lives = 3;
-      this.gameOver = false;
-      this.paused = false;
-      this.player = new Player();
-      this.enemies = [];
-      this.bullets = [];
-    }
-  
-    // other methods and game logic here
+const game = document.getElementById('game');
+const movement = document.getElementById('movement');
+const score = document.getElementById('score');
+const status = document.getElementById('status');
+const ctx = game.getContext('2d');
+let ship;
+let alien;
+
+// Load the images
+const shipImg = new Image();
+shipImg.src = './Img/spaceShip-yellow-blue.png';
+const alienImage = new Image();
+alienImage.src = './Img/alien-cyberBlade.png';
+
+// Define the Alien class
+class Alien {
+  constructor(x, y, image) {
+    this.x = x;
+    this.y = y;
+    this.image = image;
   }
-  
-  class Player {
-    constructor() {
-      this.x = 0;
-      this.y = 0;
-      // other properties and methods for the player here
-    }
+
+  draw() {
+    ctx.drawImage(this.image, this.x, this.y, this.image.width / 30, this.image.height / 30);
   }
-  
-  class Enemy {
-    constructor() {
-      this.x = 0;
-      this.y = 0;
-      // other properties and methods for the enemies here
-    }
-  }
-  
-  class Bullet {
-    constructor(x, y) {
-      this.x = x;
-      this.y = y;
-      // other properties and methods for the bullets here
-    }
-  }
+}
+
+// Draw the images onto the canvas
+alienImage.onload = function () {
+  alien = new Alien(100, 100, alienImage);
+  // Draw the alien on the canvas
+  alien.draw();
+};
+

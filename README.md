@@ -16,7 +16,7 @@ To play Galaxy Shooter online visit kacyphan7.github.io
 # HOW TO INSTALL 
 1. Fork and Clone this respository to your local machine
 2. Open index.html in your browser to play or
-3. Open the directory in your text editor of choice to view or edit the 
+3. Open the directory in your text editor of choice to view or edit the code
 
 ### Disclaimer
 
