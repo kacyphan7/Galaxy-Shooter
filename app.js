@@ -87,7 +87,7 @@ class Enemy {
           alien.y += 10; // move aliens down by 10 pixels
       }
   }
-  // Initializes the aliens and positions them in rows // move functoin play with height; push w to top for column down
+  // Initializes the aliens and positions them in rows // top is left bottom  is right ; right  is top and left is bottom - move functoin play with height; push w to top for column down
   initAliens() {
     let aliens = [];
     let y = 12;
