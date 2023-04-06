@@ -44,7 +44,7 @@ class Bullet {
     this.width = 5;
     this.height = 15;
     this.color = "blue";
-    this.dy = -5; // vertical speed
+    this.dy = 5; // vertical speed
   }
 
   draw() {
