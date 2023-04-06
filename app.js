@@ -29,8 +29,8 @@ class Alien {
   draw() {
     ctx.save(); // save the current state of the canvas
     ctx.translate(this.x, this.y); // move the canvas to the position of the alien
-    ctx.rotate(Math.PI / -2); // rotate the canvas 90 degrees
-    ctx.drawImage(this.image, 0, 0, this.image.width / 12, this.image.height / 20); // draw the image at the origin (0,0)
+    //ctx.rotate(Math.PI / -2); // rotate the canvas 90 degrees
+    ctx.drawImage(this.image, 0, 0, this.image.width / 10, this.image.height / 8); // draw the image at the origin (0,0)
     ctx.restore(); // restore the canvas to its previous state
   }
 }
@@ -44,9 +44,9 @@ alienImage.onload = function () {
 
 // ====================== Add Enemy Class, create constructor, make alien move down on grid  ======================= //
 class Enemy {
-  constructor(alienImage, columnCount) {
+  constructor(alienImage, rowsCount) {
       this.alienImage = alienImage;
-      this.columnCount = columnCount;
+      this.rowsCount = rowsCount;
       this.direction = 0;
       this.x = 10;
       this.y = 10;
@@ -90,12 +90,12 @@ class Enemy {
   // Initializes the aliens and positions them in rows 
   initAliens() {
     let aliens = [];
-    let y = 42;
-        for (let i = 0; i < this.columnCount; i++) {
-            for (let x = 30; x < width - 160; x += 30) {
+    let y = 40;
+        for (let i = 0; i < this.rowsCount; i++) {
+            for (let x = 20; x < width - 40; x += 30) {
                 aliens.push(new Alien(x, y, this.alienImage));
             }
-            y += 30;
+            y += 40;
         }
     return aliens;
   }
@@ -110,7 +110,7 @@ class Enemy {
 }
 
 alienImage.onload = function () {
-  const enemy = new Enemy(alienImage, 4);
+  const enemy = new Enemy(alienImage, 2);
   // Draw the aliens on the canvas
   enemy.draw();
 }; 

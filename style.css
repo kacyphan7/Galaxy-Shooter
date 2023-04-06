@@ -1,15 +1,23 @@
 canvas {
-    margin-top: 100px;
-    background-image: url('./Img/galaxy-green-red.png'); 
-    background-size: cover;
-    background-position: center;
+    margin-top: 50px;
     background-color: black;
-    width: 100%;
-    height: 100;
-    transform: rotate(90deg);
 }
 
 body {
-    background-color: black;
+    background-image: url('./Img/galaxy-purple-blue.png');
     color: white
 }
+
+h1{
+    margin: 0px;
+    margin-bottom: 10px;
+    font-size: 2.9em;
+    color: lightgrey;
+ }
+ .controls {
+    display: grid;
+    grid-template-columns: 50px 150px;
+    color: lightgrey;
+    justify-content: center; 
+    align-items: center;
+ }
