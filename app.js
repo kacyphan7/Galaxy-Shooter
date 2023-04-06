@@ -18,121 +18,120 @@ alienImage.src = './Img/alien-cyberBlade.png';
 const bulletImg = new Image();
 bulletImg.src = './Img/bullets.png';
 
-// ====================== Define the Alien class======================= //
+// ====================== main event listener ======================= //
+window.addEventListener('DOMContentLoaded', function() {
+  const movement = document.getElementById('movement');
+  movement.addEventListener('keydown', function(event) {
+    if (event.code === 'ArrowRight' || event.code === 'KeyD') {
+    console.log('Right arrow or D key pressed'); 
+      // Move player right
+    } else if (event.code === 'ArrowLeft' || event.code === 'KeyA') {
+      console.log('Left arrow or A key pressed');
+      // Move player left
+    } else if (event.code === 'Space') {
+      console.log('Space key pressed'); 
+      // Shoot bullet
+    }
+  });
+  setInterval(gameLoop, 60);
+});
+
+// ====================== Define the Alien class ======================= //
 class Alien {
-  constructor(x, y, image) {
+  constructor(alienImage, x, row) {
+    this.image = alienImage;
     this.x = x;
-    this.y = y;
-    this.image = image;
+    this.y = row * 60 + 50;
+    this.width = 50;
+    this.height = 50;
+    this.dx = 1; // horizontal speed
+    this.dy = 50; // vertical speed
+    this.lives = 1;
+    this.canDuplicate = true;
   }
 
   draw() {
-    ctx.save(); // save the current state of the canvas
-    ctx.translate(this.x, this.y); // move the canvas to the position of the alien
-    //ctx.rotate(Math.PI / -2); // rotate the canvas 90 degrees
-    ctx.drawImage(this.image, 0, 0, this.image.width / 10, this.image.height / 8); // draw the image at the origin (0,0)
-    ctx.restore(); // restore the canvas to its previous state
+    ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
   }
-}
 
-// Draw the images onto the canvas
-alienImage.onload = function () {
-  alien = new Alien(100, 100, alienImage);
-  // Draw the alien on the canvas
-  alien.draw();
-}; 
-
-// ====================== Add Enemy Class, create constructor, make alien move down on grid  ======================= //
-class Enemy {
-  constructor(alienImage, rowsCount) {
-      this.alienImage = alienImage;
-      this.rowsCount = rowsCount;
-      this.direction = 0;
-      this.x = 10;
-      this.y = 10;
-      this.aliens = this.initAliens(height);
-      this.bullets = [];
-  
-      this.speed = 0.2;
-  }
-  // update position of aliens and move them down if they've reached the edge of the screen 
   update() {
-      for (let alien of this.aliens) {
-          if (this.direction == 0) {
-              alien.x+= this.speed;
-          } else if (this.direction == 1) {
-              alien.x-= this.speed;
-          }
-      }
- 
-      if (this.changeDirection()) {
-          this.alienMoveDown();
-      }
-      
-  } // check if aliens reached edge of the screen and changed their direction
-  changeDirection() {
-      for (let alien of this.aliens) {
-          if (alien.x >= width - 40) {
-              this.direction = 1;
-              return true;
-          } else if (alien.x <= 20) {
-              this.direction = 0;
-              return true;  // true if alien turn direction 
-          }
-      }
-      return false; 
-  }
-  alienMoveDown() {
-      for (let alien of this.aliens) {
-          alien.y += 10; // move aliens down by 10 pixels
-      }
-  }
-  // Initializes the aliens and positions them in rows 
-  initAliens() {
-    let aliens = [];
-    let y = 40;
-        for (let i = 0; i < this.rowsCount; i++) {
-            for (let x = 20; x < width - 40; x += 30) {
-                aliens.push(new Alien(x, y, this.alienImage));
-            }
-            y += 40;
-        }
-    return aliens;
-  }
+    this.x += this.dx;
 
-  // draw all aliens on the canvas
-  draw() {
-      for (let alien of this.aliens) {
-          alien.draw();
-      }
-  }
-
-}
-
-alienImage.onload = function () {
-  const enemy = new Enemy(alienImage, 2);
-  // Draw the aliens on the canvas
-  enemy.draw();
-}; 
-
-/* key: top is left bottom is right ; right is top and left is bottom
- move function - play with height; push w to top for column down */
-
-// ====================== check for collision to remove aliens and have bottom alien fire  ======================= // 
-
-function detectCollision(x, y) {
-  // Loop through aliens array backwards 
-  for (let i = this.aliens.length - 1; i >= 0; i--) {
-    let currentAlien = this.aliens[i]; // Check distance between x,y and alien's x,y + offset
-    if (dist(x, y, currentAlien.x + 11.5, currentAlien.y + 8) < 10) { 
-      // If collision detected, remove alien from array and return true
-      this.aliens.splice(i, 1);
-      return true;
+    // Check if alien has reached left or right end of screen
+    if (this.x + this.width > width || this.x < 0) {
+      this.dx = -this.dx; // reverse horizontal direction
+      this.y += this.dy; // move down
     }
   }
-  return false; // If no collision detected, return false
+
+  checkCollisionWithBullet(bullet) {
+    if (bullet.x < this.x + this.width &&
+        bullet.x + bullet.width > this.x &&
+        bullet.y < this.y + this.height &&
+        bullet.y + bullet.height > this.y) {
+      this.lives--;
+      if (this.lives <= 0) {
+        this.destroy();
+      }
+      return true;
+    }
+    return false;
+  }
+
+  destroy() {
+    if (this.canDuplicate) {
+      // Duplicate into two new aliens
+      let newAlien1 = new Alien(this.image, this.x, this.y);
+      newAlien1.canDuplicate = false;
+      let newAlien2 = new Alien(this.image, this.x, this.y);
+      newAlien2.canDuplicate = false;
+      alienList.push(newAlien1);
+      alienList.push(newAlien2);
+    }
+    // Remove current alien from list
+    let index = alienList.indexOf(this);
+    if (index !== -1) {
+      alienList.splice(index, 1);
+    }
+    // Increase score
+    score.innerHTML = parseInt(score.innerHTML) + 100;
+  }
 }
 
-function mousePressed() {
-  Enemy.detectCollision(mouseX, mouseY);
+// create array of aliens to add rows of aliens 
+let alienList = [];
+for (let i = 0; i < 5; i++) {
+  let alien = new Alien(alienImage, i * 60 + 50, 0);
+  alienList.push(alien);
+}
+
+function gameLoop() {
+  ctx.clearRect(0, 0, width, height);
+  // Update and draw aliens
+  for (let i = 0; i < alienList.length; i++) {
+    let alien = alienList[i];
+    alien.update();
+    alien.draw();
+  }
+  // Update and draw player
+  player.update();
+  player.draw();
+  // Update and draw bullets
+  for (let i = 0; i < bulletList.length; i++) {
+    let bullet = bulletList[i];
+    bullet.update();
+    bullet.draw();
+  }
+}
+
+// ================= Class Player  ======================== //
+class Player {
+  constructor(shooterImage) {
+      this.image = shooterImage;
+      this.x = width / 2;
+      this.y = height -30;
+      this.isMovingLeft = false;
+      this.isMovingRight = false;
+      this.bullets = [];
+  }
 }
