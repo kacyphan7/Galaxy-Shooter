@@ -23,11 +23,9 @@ window.addEventListener('DOMContentLoaded', function() {
   const movement = document.getElementById('movement');
   movement.addEventListener('keydown', function(event) {
     if (event.code === 'ArrowRight' || event.code === 'KeyD') {
-    console.log('Right arrow or D key pressed'); 
-      // Move player right
+      player.x += 10; // Move player right
     } else if (event.code === 'ArrowLeft' || event.code === 'KeyA') {
-      console.log('Left arrow or A key pressed');
-      // Move player left
+      player.x -= 10; // Move player left
     } else if (event.code === 'Space') {
       console.log('Space key pressed'); 
       // Shoot bullet
@@ -35,6 +33,13 @@ window.addEventListener('DOMContentLoaded', function() {
   });
   setInterval(gameLoop, 60);
 });
+
+function gameLoop() {
+  ctx.clearRect(0, 0, width, height);
+  ctx.drawImage(playerImg, player.x, player.y, player.width, player.height);
+}
+
+game.focus();
 
 // ====================== Define the Alien class ======================= //
 class Bullet {
@@ -123,18 +128,17 @@ class Alien {
   }
 
   checkCollisionWithBullet(bullet) {
-    if (bullet.x < this.x + this.width &&
-        bullet.x + bullet.width > this.x &&
-        bullet.y < this.y + this.height &&
-        bullet.y + bullet.height > this.y) {
-      this.lives--;
-      if (this.lives <= 0) {
-        this.destroy();
-      }
-      return true;
+    if (!bullet) {
+      return false;
     }
-    return false;
+    return (
+      bullet.x < this.x + this.width &&
+      bullet.x + bullet.width > this.x &&
+      bullet.y < this.y + this.height &&
+      bullet.y + bullet.height > this.y
+    );
   }
+  
 
   destroy() {
     if (this.canDuplicate) {
