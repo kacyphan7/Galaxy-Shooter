@@ -2,7 +2,7 @@ canvas {
     margin-top: 50px;
     /* background-color: black; */
     background-image: url('./Img/galaxy-red-orange.png');
-    background-color: rgba(0, 0, 0, 0.5); 
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
 body {
@@ -10,16 +10,17 @@ body {
     color: white
 }
 
-h1{
+h1 {
     margin: 0px;
     margin-bottom: 10px;
     font-size: 2.9em;
     color: lightgrey;
- }
- .controls {
+}
+
+.controls {
     display: grid;
     grid-template-columns: 50px 150px;
     color: lightgrey;
-    justify-content: center; 
+    justify-content: center;
     align-items: center;
- }
+}

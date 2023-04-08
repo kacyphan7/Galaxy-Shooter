@@ -18,14 +18,14 @@ const bulletImg = new Image();
 bulletImg.src = './Img/bullets.png';
 
 // ====================== main event listener ======================= //
-window.addEventListener('DOMContentLoaded', function() {
+window.addEventListener('DOMContentLoaded', function () {
   player = new Player(playerImg, width / 2 - 25, height - 75);
 
 
   setInterval(gameLoop, 60);
 });
 
-document.addEventListener('keydown', movePlayer); 
+document.addEventListener('keydown', movePlayer);
 
 // ====================== ENTITIES ======================= //
 class Bullet {
@@ -50,6 +50,10 @@ class Bullet {
     this.y += this.dy;
   }
 
+  update2() {
+    this.y -= this.dy;
+  }
+
   destroy() {
     // Remove bullet from list of active bullets
     let index = bulletList.indexOf(this);
@@ -60,7 +64,6 @@ class Bullet {
 }
 
 /***************** add class alien with alienImage **********************/
-
 class Alien {
   constructor(alienImage, x, row) {
     this.image = alienImage;
@@ -77,8 +80,8 @@ class Alien {
 
   draw() {
     ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
-     // Draw the bullets fired by the alien
-     for (let i = 0; i < this.bulletList.length; i++) {
+    // Draw the bullets fired by the alien
+    for (let i = 0; i < this.bulletList.length; i++) {
       let bullet = this.bulletList[i];
       bullet.draw();
     }
@@ -87,49 +90,50 @@ class Alien {
   update() {
     this.x += this.dx;
 
-     // Check if alien has reached left or right end of screen
-  if (this.x + this.width > width || this.x < 0) {
-    this.dx = -this.dx; // reverse horizontal direction
-    this.y += this.dy; // move down
-  }
-
-  // Check if the first row of aliens has reached the middle of the screen
-  if (this.y + this.height >= height/2 && this.canDuplicate) {
-    // Duplicate into a new row of aliens
-    for (let i = 0; i < 5; i++) {
-      let newAlien = new Alien(this.image, 50 + i * 100, 50);
-      newAlien.canDuplicate = false;
-      alienList.push(newAlien);
+    // Check if alien has reached left or right end of screen
+    if (this.x + this.width > width || this.x < 0) {
+      this.dx = -this.dx; // reverse horizontal direction
+      this.y += this.dy; // move down
     }
-  }
 
-  // Fire a bullet randomly
-  if (Math.random() < 0.005) {
-    this.fireBullet();
-  }
+    // Check if the first row of aliens has reached the middle of the screen
+    if (this.y + this.height >= height / 2 && this.canDuplicate) {
+      // Duplicate into a new row of aliens
+      for (let i = 0; i < 5; i++) {
+        let newAlien = new Alien(this.image, 50 + i * 100, 50);
+        newAlien.canDuplicate = false;
+        alienList.push(newAlien);
+      }
+    }
 
-  // Update the bullets fired by the alien
-  for (let i = 0; i < this.bulletList.length; i++) {
-    let bullet = this.bulletList[i];
-    bullet.update();
-    if (bullet.y > height) {
-      this.bulletList.splice(i, 1); // Remove the bullet if it goes out of screen
-    } else {
-      // Check for collision with player bullets
-      for (let j = 0; j < player.bulletList.length; j++) {
-        let playerBullet = player.bulletList[j];
-        if (this.checkCollisionWithBullet(playerBullet)) {
-          // Remove player bullet and destroy alien
-          player.bulletList.splice(j, 1);
-          this.destroy();
+    // Fire a bullet randomly
+    if (Math.random() < 0.005) {
+      this.fireBullet();
+    }
+
+    // Update the bullets fired by the alien
+    for (let i = 0; i < this.bulletList.length; i++) {
+      let bullet = this.bulletList[i];
+      bullet.update();
+      let hit = detectHit(player, bullet)
+      if (bullet.y > height) {
+        this.bulletList.splice(i, 1); // Remove the bullet if it goes out of screen
+      } else {
+        // Check for collision with player bullets
+        for (let j = 0; j < player.bulletList.length; j++) {
+          let playerBullet = player.bulletList[j];
+          if (this.checkCollisionWithBullet(playerBullet)) {
+            // Remove player bullet and destroy alien
+            player.bulletList.splice(j, 1);
+            this.destroy();
+          }
         }
       }
     }
   }
-}
 
   fireBullet() {
-    let bullet = new Bullet(this.x + this.width/2, this.y + this.height, 1); // Create a new bullet at the center of the alien
+    let bullet = new Bullet(this.x + this.width / 2, this.y + this.height, 1)// Create a new bullet at the center of the alien
     this.bulletList.push(bullet); // Add the bullet to the list of bullets fired by the alien
   }
 
@@ -144,7 +148,7 @@ class Alien {
       bullet.y + bullet.height > this.y
     );
   }
-  
+
 
   destroy() {
     if (this.canDuplicate) {
@@ -196,14 +200,15 @@ class Player {
     this.dy = 0; // vertical speed
     this.speed = 20; // movement speed
     this.bulletList = [];
-    this.lives = 3;
     this.playerBullets = [];
+    this.alive = true;
+    this.score = 0;
   }
 
   draw() {
     ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
-     // Draw the bullets fired by the player
-     for (let i = 0; i < this.bulletList.length; i++) {
+    // Draw the bullets fired by the player
+    for (let i = 0; i < this.bulletList.length; i++) {
       let bullet = this.bulletList[i];
       bullet.draw();
     }
@@ -228,23 +233,25 @@ class Player {
       this.y = height - this.height;
     }
 
-     // Update the bullets fired by the player
-     for (let i = 0; i < this.bulletList.length; i++) {
+    // Update the bullets fired by the player
+    for (let i = 0; i < this.bulletList.length; i++) {
       let bullet = this.bulletList[i];
-      bullet.update();
+      bullet.update2();
       if (bullet.y < 0) {
         this.bulletList.splice(i, 1); // Remove the bullet if it goes out of screen
       }
     }
+
   }
 
   fireBullet() {
     // Create new bullet
-    let bullet = new Bullet(this.x + this.width/2, this.y, -5); // Create a new bullet at the center of the player and move it upwards
+    let bullet = new Bullet(this.x + this.width / 2, this.y, -5); // Create a new bullet at the center of the player and move it upwards
+    //let bullet = new Bullet(this.x + this.width / 2, this.y + this.height, 1); 
     playerBullets.push(bullet); // Add the bullet to the list of player bullets
   }
 
-  checkCollisionWithAlien(alien) {
+  checkCollisionWithAlien(_alien) {
     if (!bullet) {
       return false;
     }
@@ -263,13 +270,23 @@ class Player {
       console.log("Game over!");
     } else {
       // Reset player position and speed
-      this.x = width/2 - this.width/2;
+      this.x = width / 2 - this.width / 2;
       this.y = height - 100;
       this.dx = 0;
       this.dy = 0;
     }
   }
-}
+    reset() {
+      this.x = width / 2 - this.width / 2;
+      this.y = height - 75;
+      this.dx = 0;
+      this.dy = 0;
+      this.score = 0;
+      this.bulletList = [];
+      this.playerBullets = [];
+    }
+  }
+
 
 // Create player object
 let player = new Player(playerImg, width / 2 - 25, height - 75);
@@ -298,7 +315,7 @@ function movePlayer(e) {
 }
 
 // Add key up event listener
-document.addEventListener('keyup', function(e) {
+document.addEventListener('keyup', function (e) {
   if (e.key === 'ArrowRight' || e.key === 'd') {
     player.dx = 0;
   } else if (e.key === 'ArrowLeft' || e.key === 'a') {
@@ -307,29 +324,49 @@ document.addEventListener('keyup', function(e) {
     player.dy = 0;
   } else if (e.key === 'ArrowDown' || e.key === 's') {
     player.dy = 0;
-  } 
+  }
 });
 
-// ====================== GAME PROCESSES ======================= //
+// ====================== HELPER FUNCTIONS ======================= //
+function addNewPlayer() {
+  player.alive = false;
+  // use setTimeout to create a new player after 1 second (1000 miliseconds)
+  setTimeout(function() {
+      player = new Player(playerImg);
+  }, 1000);
+  return true;
+}
 
+// ====================== GAME PROCESSES ======================= //
 function gameLoop() {
   //clear canvas
   ctx.clearRect(0, 0, width, height);
-  // draw player ship 
+  //check player alive 
+  if (player.alive) {
+    // draw player ship 
     player.update();
     player.draw();
 
-   // Update and draw the aliens
-   for (let i = 0; i < alienList.length; i++) {
+    // Update and draw the aliens
+    for (let i = 0; i < alienList.length; i++) {
+      let alien = alienList[i];
+      alien.update();
+      alien.draw();
+      let hit = detectHit(player, alien);
+    }
+  }
+
+  // Update and draw the aliens
+  /* for (let i = 0; i < alienList.length; i++) {
     let alien = alienList[i];
     alien.update();
     alien.draw();
-  }
+  }*/
 
   // Update and draw the player bullets
   for (let i = 0; i < playerBullets.length; i++) {
     let bullet = playerBullets[i];
-    bullet.update();
+    bullet.update2();
     bullet.draw();
     // Remove the bullet if it goes out of screen
     if (bullet.y < 0) {
@@ -363,3 +400,47 @@ function gameLoop() {
   }
   game.focus();
 }
+
+// ====================== COLLISION DETECTION ======================= //
+function detectHit(player, opponent) {
+  //console.log('opponent y', opponent.y);
+  //console.log('player y', player.y);
+  let hitTest = (
+    player.y + player.height > opponent.y &&
+    player.y < opponent.y + opponent.height &&
+    player.x + player.width > opponent.x &&
+    player.x < opponent.x + opponent.width
+  );
+
+  if (hitTest) {
+    // Add 100 points to current score 
+    let newScore = Number(score.textContent) + 100;
+    score.textContent = newScore;
+
+    // Check if player has lives left
+    if (player.lives <= 0) {
+      // Game over, restart game
+      //alert('Game over!');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      restartGame();
+      return;
+    }
+        // Return true if hit
+        return true;
+  }
+}
+
+// ====================== RESTART ======================= //
+let restartButton = document.querySelector('#restart');
+
+restartButton.addEventListener('click', function() {
+  score.textContent = 0;
+  restartGame();
+});
+
+if (score.textContent === '0') {
+  gameStatus.textContent == 'Play the game';
+} else {
+gameStatus.textContent = 'Keep playing';
+}
+

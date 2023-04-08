@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -7,6 +8,7 @@
     <title>Galaxy Shooter</title>
     <link rel="stylesheet" href="./style.css">
 </head>
+
 <body>
     <div class="imageContainer">
         <img src="./Img/spaceShip-yellow-blue.png" alt="spaceShip-yellow-blue" id="ship" style="display: none;">
@@ -14,15 +16,22 @@
         <img src="./Img/bullets.png" alt="bullets" id="bullets" style="display: none;">
     </div>
     <div id="container">
-        <aside id="top-left"><h2></h2></aside>
-        <aside id="top-right"><h2 id="movement"></h2></aside>
-    <span class="controls">
-        <div>Move</div>
-        <div>Arrow Keys</div>
-        <div>Shoot</div>
-        <div>Space bar</div>
-    </span>    
-    <canvas id="game" width="400" height="600" style="display: block; margin: auto;"><!-- play it, a game --></canvas>
+        <aside id="top-left">
+            <h2></h2>
+        </aside>
+        <aside id="top-right">
+            <h2 id="movement"></h2>
+        </aside>
+        <span class="controls">
+            <div>Move</div>
+            <div>Arrow Keys</div>
+            <div>Shoot</div>
+            <div>Space bar</div>
+        </span>
+        <canvas id="game" width="400" height="600"
+            style="display: block; margin: auto;"><!-- play it, a game --></canvas>
+        <h2 id="score">0</h2>
+        <h2 id="gameStatus">play the game</h2><button id="restart">restart</button>
     </div>
     <script src="./app.js"></script>
 </body>
