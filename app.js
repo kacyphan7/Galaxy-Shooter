@@ -175,7 +175,7 @@ class Player {
     this.height = 50;
     this.dx = 0; // horizontal speed
     this.dy = 0; // vertical speed
-    this.speed = 5; // movement speed
+    this.speed = 20; // movement speed
     this.bulletList = [];
   }
 
@@ -249,6 +249,21 @@ function movePlayer(e) {
     player.fireBullet();
   }
 }
+
+// Add key up event listener
+document.addEventListener('keyup', function(e) {
+  if (e.key === 'ArrowRight' || e.key === 'd') {
+    player.dx = 0;
+  } else if (e.key === 'ArrowLeft' || e.key === 'a') {
+    player.dx = 0;
+  } else if (e.key === 'ArrowUp' || e.key === 'w') {
+    player.dy = 0;
+  } else if (e.key === 'ArrowDown' || e.key === 's') {
+    player.dy = 0;
+  } else if (e.key === 'Space') {
+    player.fireBullet();
+  }
+});
 
 // ====================== GAME PROCESSES ======================= //
 
