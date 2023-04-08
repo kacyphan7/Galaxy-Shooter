@@ -52,6 +52,8 @@ class Bullet {
   }
 }
 
+/***************** add class alien with alienImage **********************/
+
 class Alien {
   constructor(alienImage, x, row) {
     this.image = alienImage;
@@ -165,7 +167,7 @@ function createAlienRow(startX, startY, numAliens) {
   return aliens;
 }
 
-// add class player with playerImg
+/***************** add class player with playerImg **********************/
 class Player {
   constructor(playerImg, x, y) {
     this.image = playerImg;
@@ -177,6 +179,7 @@ class Player {
     this.dy = 0; // vertical speed
     this.speed = 20; // movement speed
     this.bulletList = [];
+    this.playerBullets = [];
   }
 
   draw() {
@@ -210,8 +213,8 @@ class Player {
 
   fireBullet() {
     // Create new bullet
-    let bullet = new Bullet(this.y + this.width / 2, this.x);
-    bulletList.push(bullet);
+    let bullet = new Bullet(this.x + this.width/2, this.y, -5); // Create a new bullet at the center of the player and move it upwards
+    playerBullets.push(bullet); // Add the bullet to the list of player bullets
   }
 
   checkCollisionWithAlien(alien) {
@@ -230,6 +233,7 @@ let player = new Player(playerImg, width / 2 - 25, height - 75);
 
 // declare bulletlist array 
 let bulletList = [];
+let playerBullets = [];
 
 // ====================== KEYBOARD LOGIC  ======================= //
 window.addEventListener('keydown', movePlayer);
@@ -245,7 +249,7 @@ function movePlayer(e) {
     player.dy = -player.speed;
   } else if (e.key === 'ArrowDown' || e.key === 's') {
     player.dy = player.speed;
-  } else if (e.key === 'Space') {
+  } else if (e.key === ' ') {
     player.fireBullet();
   }
 }
@@ -260,9 +264,7 @@ document.addEventListener('keyup', function(e) {
     player.dy = 0;
   } else if (e.key === 'ArrowDown' || e.key === 's') {
     player.dy = 0;
-  } else if (e.key === 'Space') {
-    player.fireBullet();
-  }
+  } 
 });
 
 // ====================== GAME PROCESSES ======================= //
@@ -274,57 +276,47 @@ function gameLoop() {
     player.update();
     player.draw();
 
-  // Update and draw aliens
-  for (let i = 0; i < alienList.length; i++) {
+   // Update and draw the aliens
+   for (let i = 0; i < alienList.length; i++) {
     let alien = alienList[i];
     alien.update();
     alien.draw();
+  }
 
-    if (alien.y + alien.height > height) {
-      // Create new row of aliens
-      let newRow = createAlienRow(50, 50, 5);
-        alienList = alienList.concat(newRow);
-        break; // Exit loop to avoid adding duplicates
-      }
-    }
-    
-   // Update and draw the bullets fired by the player
-   if (bullet) {
+  // Update and draw the player bullets
+  for (let i = 0; i < playerBullets.length; i++) {
+    let bullet = playerBullets[i];
     bullet.update();
     bullet.draw();
-  }
-
-  // Update and draw the bullets fired by the aliens
-  for (let i = 0; i < alienList.length; i++) {
-    let alien = alienList[i];
-    for (let j = 0; j < alien.bulletList.length; j++) {
-      let alienBullet = alien.bulletList[j];
-      alienBullet.update();
-      alienBullet.draw();
+    // Remove the bullet if it goes out of screen
+    if (bullet.y < 0) {
+      playerBullets.splice(i, 1);
+      i--;
     }
   }
 
-  // Check for collisions
-  for (let i = 0; i < alienList.length; i++) {
-    let alien = alienList[i];
-    if (bullet && alien.checkCollisionWithBullet(bullet)) {
-      bullet = null; // Player bullet is destroyed
-      break;
-    }
-  }
-
-  // Check for collisions between player and alien bullets
-  for (let i = 0; i < alienList.length; i++) {
-    let alien = alienList[i];
-    for (let j = 0; j < alien.bulletList.length; j++) {
-      let alienBullet = alien.bulletList[j];
-      if (alienBullet && alien.checkCollisionWithBullet(bullet)) {
-        alien.bulletList.splice(j, 1); // Remove the alien bullet if it hits the player
+  // Check for collisions between player bullets and aliens
+  for (let i = 0; i < playerBullets.length; i++) {
+    let bullet = playerBullets[i];
+    for (let j = 0; j < alienList.length; j++) {
+      let alien = alienList[j];
+      if (alien.checkCollisionWithBullet(bullet)) {
+        bullet.destroy();
+        alien.destroy();
+        i--;
         break;
       }
     }
-  
   }
-}
 
-game.focus();
+  // Check for collisions between player and aliens
+  for (let i = 0; i < alienList.length; i++) {
+    let alien = alienList[i];
+    if (player.checkCollisionWithAlien(alien)) {
+      player.destroy();
+      //status.innerHTML = 'Game Over';
+      return;
+    }
+  }
+  game.focus();
+}
