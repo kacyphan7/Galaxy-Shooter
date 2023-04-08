@@ -9,7 +9,6 @@ const height = game.height;
 let ship;
 let alien;
 let bullet;
-
 // ====================== Load the images ======================= //
 const playerImg = new Image();
 playerImg.src = './Img/spaceShip-yellow-blue.png';
@@ -35,13 +34,13 @@ class Bullet {
     this.y = y;
     this.width = 5;
     this.height = 15;
-    this.color = "blue";
+    this.color = "yellow";
     this.dy = 5; // vertical speed
   }
 
   draw() {
     ctx.beginPath();
-    ctx.fillStyle = "#7CE7EE";
+    ctx.fillStyle = "#DEFA69";
     ctx.rect(this.x, this.y, this.width, this.height);
     ctx.fill();
     ctx.closePath();
@@ -49,6 +48,14 @@ class Bullet {
 
   update() {
     this.y += this.dy;
+  }
+
+  destroy() {
+    // Remove bullet from list of active bullets
+    let index = bulletList.indexOf(this);
+    if (index !== -1) {
+      bulletList.splice(index, 1);
+    }
   }
 }
 
@@ -81,35 +88,45 @@ class Alien {
     this.x += this.dx;
 
      // Check if alien has reached left or right end of screen
-     if (this.x + this.width > width || this.x < 0) {
-      this.dx = -this.dx; // reverse horizontal direction
-      this.y += this.dy; // move down
-    }
+  if (this.x + this.width > width || this.x < 0) {
+    this.dx = -this.dx; // reverse horizontal direction
+    this.y += this.dy; // move down
+  }
 
-    // Check if the first row of aliens has reached the middle of the screen
-    if (this.y + this.height >= height/2 && this.canDuplicate) {
-      // Duplicate into a new row of aliens
-      for (let i = 0; i < 5; i++) {
-        let newAlien = new Alien(this.image, 50 + i * 100, 50);
-        newAlien.canDuplicate = false;
-        alienList.push(newAlien);
-      }
+  // Check if the first row of aliens has reached the middle of the screen
+  if (this.y + this.height >= height/2 && this.canDuplicate) {
+    // Duplicate into a new row of aliens
+    for (let i = 0; i < 5; i++) {
+      let newAlien = new Alien(this.image, 50 + i * 100, 50);
+      newAlien.canDuplicate = false;
+      alienList.push(newAlien);
     }
+  }
 
-    // Fire a bullet randomly
-    if (Math.random() < 0.005) {
-      this.fireBullet();
-    }
+  // Fire a bullet randomly
+  if (Math.random() < 0.005) {
+    this.fireBullet();
+  }
 
-    // Update the bullets fired by the alien
-    for (let i = 0; i < this.bulletList.length; i++) {
-      let bullet = this.bulletList[i];
-      bullet.update();
-      if (bullet.y > height) {
-        this.bulletList.splice(i, 1); // Remove the bullet if it goes out of screen
+  // Update the bullets fired by the alien
+  for (let i = 0; i < this.bulletList.length; i++) {
+    let bullet = this.bulletList[i];
+    bullet.update();
+    if (bullet.y > height) {
+      this.bulletList.splice(i, 1); // Remove the bullet if it goes out of screen
+    } else {
+      // Check for collision with player bullets
+      for (let j = 0; j < player.bulletList.length; j++) {
+        let playerBullet = player.bulletList[j];
+        if (this.checkCollisionWithBullet(playerBullet)) {
+          // Remove player bullet and destroy alien
+          player.bulletList.splice(j, 1);
+          this.destroy();
+        }
       }
     }
   }
+}
 
   fireBullet() {
     let bullet = new Bullet(this.x + this.width/2, this.y + this.height, 1); // Create a new bullet at the center of the alien
@@ -145,7 +162,7 @@ class Alien {
       alienList.splice(index, 1);
     }
     // Increase score
-    score.innerHTML = parseInt(score.innerHTML) + 100;
+    //score.innerHTML = parseInt(score.innerHTML) + 100;
   }
 }
 
@@ -179,6 +196,7 @@ class Player {
     this.dy = 0; // vertical speed
     this.speed = 20; // movement speed
     this.bulletList = [];
+    this.lives = 3;
     this.playerBullets = [];
   }
 
@@ -209,6 +227,15 @@ class Player {
     if (this.y + this.height > height) {
       this.y = height - this.height;
     }
+
+     // Update the bullets fired by the player
+     for (let i = 0; i < this.bulletList.length; i++) {
+      let bullet = this.bulletList[i];
+      bullet.update();
+      if (bullet.y < 0) {
+        this.bulletList.splice(i, 1); // Remove the bullet if it goes out of screen
+      }
+    }
   }
 
   fireBullet() {
@@ -218,13 +245,29 @@ class Player {
   }
 
   checkCollisionWithAlien(alien) {
-    if (this.x < alien.x + alien.width &&
-        this.x + this.width > alien.x &&
-        this.y < alien.y + alien.height &&
-        this.y + this.height > alien.y) {
-      return true;
+    if (!bullet) {
+      return false;
     }
-    return false;
+    return (
+      bullet.x < this.x + this.width &&
+      bullet.x + bullet.width > this.x &&
+      bullet.y < this.y + this.height &&
+      bullet.y + bullet.height > this.y
+    );
+  }
+
+  destroy() {
+    this.lives -= 1;
+    if (this.lives <= 0) {
+      // Game over
+      console.log("Game over!");
+    } else {
+      // Reset player position and speed
+      this.x = width/2 - this.width/2;
+      this.y = height - 100;
+      this.dx = 0;
+      this.dy = 0;
+    }
   }
 }
 
