@@ -20,28 +20,15 @@ bulletImg.src = './Img/bullets.png';
 
 // ====================== main event listener ======================= //
 window.addEventListener('DOMContentLoaded', function() {
-  const movement = document.getElementById('movement');
-  movement.addEventListener('keydown', function(event) {
-    if (event.code === 'ArrowRight' || event.code === 'KeyD') {
-      player.x += 10; // Move player right
-    } else if (event.code === 'ArrowLeft' || event.code === 'KeyA') {
-      player.x -= 10; // Move player left
-    } else if (event.code === 'Space') {
-      console.log('Space key pressed'); 
-      // Shoot bullet
-    }
-  });
+  player = new Player(playerImg, width / 2 - 25, height - 75);
+
+
   setInterval(gameLoop, 60);
 });
 
-function gameLoop() {
-  ctx.clearRect(0, 0, width, height);
-  ctx.drawImage(playerImg, player.x, player.y, player.width, player.height);
-}
+document.addEventListener('keydown', movePlayer); 
 
-game.focus();
-
-// ====================== Define the Alien class ======================= //
+// ====================== ENTITIES ======================= //
 class Bullet {
   constructor(x, y) {
     this.x = x;
@@ -189,10 +176,16 @@ class Player {
     this.dx = 0; // horizontal speed
     this.dy = 0; // vertical speed
     this.speed = 5; // movement speed
+    this.bulletList = [];
   }
 
   draw() {
     ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
+     // Draw the bullets fired by the player
+     for (let i = 0; i < this.bulletList.length; i++) {
+      let bullet = this.bulletList[i];
+      bullet.draw();
+    }
   }
 
   update() {
@@ -217,37 +210,8 @@ class Player {
 
   fireBullet() {
     // Create new bullet
-    let bullet = new Bullet(this.x + this.width / 2, this.y);
+    let bullet = new Bullet(this.y + this.width / 2, this.x);
     bulletList.push(bullet);
-  }
-
-  handleKeyDown(event) {
-    // Handle player movement and firing
-    if (event.key === "ArrowLeft") {
-      this.dx = -this.speed;
-    }
-    if (event.key === "ArrowRight") {
-      this.dx = this.speed;
-    }
-    if (event.key === "ArrowUp") {
-      this.dy = -this.speed;
-    }
-    if (event.key === "ArrowDown") {
-      this.dy = this.speed;
-    }
-    if (event.key === " ") {
-      this.fireBullet();
-    }
-  }
-
-  handleKeyUp(event) {
-    // Stop player movement
-    if (event.key === "ArrowLeft" || event.key === "ArrowRight") {
-      this.dx = 0;
-    }
-    if (event.key === "ArrowUp" || event.key === "ArrowDown") {
-      this.dy = 0;
-    }
   }
 
   checkCollisionWithAlien(alien) {
@@ -267,11 +231,32 @@ let player = new Player(playerImg, width / 2 - 25, height - 75);
 // declare bulletlist array 
 let bulletList = [];
 
-//game loop
+// ====================== KEYBOARD LOGIC  ======================= //
+window.addEventListener('keydown', movePlayer);
+
+function movePlayer(e) {
+  console.log('movement :', e.key);
+
+  if (e.key === 'ArrowRight' || e.key === 'd') {
+    player.dx = player.speed;
+  } else if (e.key === 'ArrowLeft' || e.key === 'a') {
+    player.dx = -player.speed;
+  } else if (e.key === 'ArrowUp' || e.key === 'w') {
+    player.dy = -player.speed;
+  } else if (e.key === 'ArrowDown' || e.key === 's') {
+    player.dy = player.speed;
+  } else if (e.key === 'Space') {
+    player.fireBullet();
+  }
+}
+
+// ====================== GAME PROCESSES ======================= //
+
 function gameLoop() {
   //clear canvas
   ctx.clearRect(0, 0, width, height);
   // draw player ship 
+    player.update();
     player.draw();
 
   // Update and draw aliens
@@ -326,16 +311,5 @@ function gameLoop() {
   
   }
 }
-   // Update the score
-   /* if (status) {
-    status.innerHTML = "Score: " + score.innerHTML;
-  }
-   // Check if the game is over
-   if (alienList.length === 0) {
-     status.innerHTML = "You Win!";
-     clearInterval(gameInterval);
-   } else if (alienList[alienList.length - 1].y + alienList[alienList.length - 1].height > height - ship.height) {
-     status.innerHTML = "Game Over";
-     clearInterval(gameInterval);
-   }
-} */
+
+game.focus();
