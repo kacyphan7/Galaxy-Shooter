@@ -18,7 +18,9 @@ h1 {
 }
 
 .controls {
+    position: absolute;
     display: grid;
+    bottom: 0;
     grid-template-columns: 50px 150px;
     color: lightgrey;
     justify-content: center;

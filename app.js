@@ -1,10 +1,10 @@
-const game = document.getElementById('game');
+const canvas = document.getElementById('game');
 const movement = document.getElementById('movement');
 const score = document.getElementById('score');
 const status = document.getElementById('status');
-const ctx = game.getContext('2d');
-const width = game.width;
-const height = game.height;
+const ctx = canvas.getContext('2d');
+const width = canvas.width;
+const height = canvas.height;
 
 let ship;
 let alien;
@@ -34,9 +34,9 @@ class Bullet {
     this.x = x;
     this.y = y;
     this.width = 5;
-    this.height = 15;
+    this.height = 5;
     this.color = "yellow";
-    this.dy = 5; // vertical speed
+    this.dy = 10; // vertical speed
   }
 
   draw() {
@@ -76,88 +76,88 @@ class Alien {
     this.dy = 50; // vertical speed
     this.lives = 1;
     this.bulletList = [];
-}
+  }
 
-draw() {
+  draw() {
     ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
     // Draw the bullets fired by the alien
     for (let bullet of this.bulletList) {
-        bullet.draw();
+      bullet.draw();
     }
-}
+  }
 
-update() {
+  update() {
     this.x += this.dx;
 
     // Check if alien has reached left or right end of screen
     if (this.x + this.width > width || this.x < 0) {
-        this.dx = -this.dx; // reverse horizontal direction
-        this.y += this.dy; // move down
+      this.dx = -this.dx; // reverse horizontal direction
+      this.y += this.dy; // move down
     }
 
     // Check if alien has reached bottom of screen
     if (this.y + this.height >= height) {
-        endGame(); // Call function to end the game
+      endGame(); // Call function to end the game
     }
 
     // Fire a bullet randomly
     if (Math.random() < 0.005) {
-        this.fireBullet();
+      this.fireBullet();
     }
 
     // Update the bullets fired by the alien
     for (let i = this.bulletList.length - 1; i >= 0; i--) {
-        let bullet = this.bulletList[i];
-        bullet.update();
-        let hit = detectHit(player, bullet);
-        if (bullet.y > height) {
-            this.bulletList.splice(i, 1); // Remove the bullet if it goes out of screen
-        } else {
-            // Check for collision with player bullets
-            for (let j = player.bulletList.length - 1; j >= 0; j--) {
-                let playerBullet = player.bulletList[j];
-                if (this.checkCollisionWithBullet(playerBullet)) {
-                    // Remove player bullet and destroy alien
-                    player.bulletList.splice(j, 1);
-                    this.destroy();
-                }
-            }
+      let bullet = this.bulletList[i];
+      bullet.update();
+      let hit = detectHit(player, bullet);
+      if (bullet.y > height) {
+        this.bulletList.splice(i, 1); // Remove the bullet if it goes out of screen
+      } else {
+        // Check for collision with player bullets
+        for (let j = player.bulletList.length - 1; j >= 0; j--) {
+          let playerBullet = player.bulletList[j];
+          if (this.checkCollisionWithBullet(playerBullet)) {
+            // Remove player bullet and destroy alien
+            player.bulletList.splice(j, 1);
+            this.destroy();
+          }
         }
+      }
     }
-}
+  }
 
-fireBullet() {
+  fireBullet() {
     let bullet = new Bullet(this.x + this.width / 2, this.y + this.height, 1);// Create a new bullet at the center of the alien
     this.bulletList.push(bullet); // Add the bullet to the list of bullets fired by the alien
-}
+  }
 
-checkCollisionWithBullet(bullet) {
+  checkCollisionWithBullet(bullet) {
     if (!bullet) {
-        return false;
+      return false;
     }
     return (
-        bullet.x < this.x + this.width &&
-        bullet.x + bullet.width > this.x &&
-        bullet.y < this.y + this.height &&
-        bullet.y + bullet.height > this.y
+      bullet.x < this.x + this.width &&
+      bullet.x + bullet.width > this.x &&
+      bullet.y < this.y + this.height &&
+      bullet.y + bullet.height > this.y
     );
-}
-destroy() {
+  }
+  destroy() {
     if (this.canDuplicate) {
-        // Duplicate into two new aliens
-        let newAlien1 = new Alien(this.image, this.x, this.y);
-        newAlien1.canDuplicate = false;
-        let newAlien2 = new Alien(this.image, this.x, this.y);
-        newAlien2.canDuplicate = false;
-        alienList.push(newAlien1);
-        alienList.push(newAlien2);
+      // Duplicate into two new aliens
+      let newAlien1 = new Alien(this.image, this.x, this.y);
+      newAlien1.canDuplicate = false;
+      let newAlien2 = new Alien(this.image, this.x, this.y);
+      newAlien2.canDuplicate = false;
+      alienList.push(newAlien1);
+      alienList.push(newAlien2);
     }
     // Remove current alien from list
     let index = alienList.indexOf(this);
     if (index !== -1) {
-        alienList.splice(index, 1);
+      alienList.splice(index, 1);
     }
-}
+  }
 }
 
 // create array of aliens to add a row of aliens 
@@ -165,25 +165,25 @@ let alienList = [];
 
 // function to add new row of alien in loop when reach bottom of the screen 
 function createAlienRow(startX, startY, numAliens) {
-let aliens = [];
+  let aliens = [];
 
-for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < 6; i++) {
     let alien = new Alien(alienImage, startX + i * 60, startY);
     aliens.push(alien);
-}
+  }
 
-return aliens;
+  return aliens;
 }
 
 // add first row every 5 seconds
-setInterval(function() {
-let newAliens = createAlienRow(50, 0, 6);
-alienList = alienList.concat(newAliens);
+setInterval(function () {
+  let newAliens = createAlienRow(50, 0, 6);
+  alienList = alienList.concat(newAliens);
 }, 5000);
 
-setInterval(function() {
-let newAliens = createAlienRow(50, 0, 6);
-alienList = alienList.concat(newAliens);
+setInterval(function () {
+  let newAliens = createAlienRow(50, 0, 6);
+  alienList = alienList.concat(newAliens);
 }, 10000);
 
 
@@ -275,16 +275,16 @@ class Player {
       this.dy = 0;
     }
   }
-    reset() {
-      this.x = width / 2 - this.width / 2;
-      this.y = height - 75;
-      this.dx = 0;
-      this.dy = 0;
-      this.score = 0;
-      this.bulletList = [];
-      this.playerBullets = [];
-    }
+  reset() {
+    this.x = width / 2 - this.width / 2;
+    this.y = height - 75;
+    this.dx = 0;
+    this.dy = 0;
+    this.score = 0;
+    this.bulletList = [];
+    this.playerBullets = [];
   }
+}
 
 
 // Create player object
@@ -330,8 +330,8 @@ document.addEventListener('keyup', function (e) {
 function addNewPlayer() {
   player.alive = false;
   // use setTimeout to create a new player after 1 second (1000 miliseconds)
-  setTimeout(function() {
-      player = new Player(playerImg);
+  setTimeout(function () {
+    player = new Player(playerImg);
   }, 1000);
   return true;
 }
@@ -339,8 +339,8 @@ function addNewPlayer() {
 function addNewAlien() {
   alien.alive = false;
   // use setTimeout to create a new player after 1 second (1000 miliseconds)
-  setTimeout(function() {
-      alien = new Alien(alienImage);
+  setTimeout(function () {
+    alien = new Alien(alienImage);
   }, 1000);
   return true;
 }
@@ -398,7 +398,7 @@ function gameLoop() {
       return;
     }
   }
-  game.focus();
+  canvas.focus();
 }
 
 // ====================== COLLISION DETECTION ======================= //
@@ -425,24 +425,38 @@ function detectHit(player, opponent) {
       restartGame();
       return;
     }
-        // Return true if hit
-        return true;
+    // Return true if hit
+    return true;
   }
 }
 
 // ====================== RESTART ======================= //
-let restartButton = document.querySelector('#restart');
+let restartButton = document.querySelector('#restartBtn');
 
-restartButton.addEventListener('click', function() {
+function restartGame() {
   score.textContent = 0;
-  restartGame();
-});
+  ctx.clearRect(0, 0, canvas.width, canvas.height); // clear the canvas
+  alienList = [];
 
-if (score.textContent === '0') {
-  gameStatus.textContent == 'Play the game';
-} else {
-gameStatus.textContent = 'Keep playing';
+  if (score.textContent === '0') {
+    gameStatus.textContent = 'Play the Game';
+  }
 }
 
+restartButton.addEventListener('click', restartGame);
 
+function endGame() {
+  gameStatus.innerHTML = 'Game Over!';
+  player.destroy();
+  alienList = [];
+  bulletList = [];
+  clearInterval(gameInterval);
+  score.textContent = 0;
+
+  setTimeout(() => {
+    gameStatus.innerHTML = 'Play the Game';
+  }, 1500);
+}
+
+let gameInterval;
 // create div then go to css
