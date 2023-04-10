@@ -17,7 +17,7 @@
     </div>
     <div id="container">
         <aside id="top-left">
-            <h2></h2>
+            <h2 id="gameStatus">Play the Game</h2>
         </aside>
         <aside id="top-right">
             <h2 id="movement"></h2>
@@ -28,11 +28,14 @@
             <div>Shoot</div>
             <div>Space bar</div>
         </span>
+        <h2 id="score">0</h2>
         <canvas id="game" width="400" height="600"
             style="display: block; margin: auto;"><!-- play it, a game --></canvas>
-        <h2 id="score">0</h2>
-        <h2 id="gameStatus">play the game</h2><button id="restart">restart</button>
+        <button id="play-button">Start Game</button>
+        <button id="pause-button">Pause Game</button>
+        <button id="restart">Restart</button>
     </div>
     <script src="./app.js"></script>
 </body>
+
 </html>

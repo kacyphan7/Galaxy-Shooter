@@ -9,6 +9,7 @@ const height = game.height;
 let ship;
 let alien;
 let bullet;
+
 // ====================== Load the images ======================= //
 const playerImg = new Image();
 playerImg.src = './Img/spaceShip-yellow-blue.png';
@@ -65,128 +66,126 @@ class Bullet {
 
 /***************** add class alien with alienImage **********************/
 class Alien {
-  constructor(alienImage, x, row) {
+  constructor(alienImage, x, rowCount) {
     this.image = alienImage;
     this.x = x;
-    this.y = row * 60 + 50;
+    this.y = rowCount;
     this.width = 50;
     this.height = 50;
-    this.dx = 1; // horizontal speed
+    this.dx = 5; // horizontal speed
     this.dy = 50; // vertical speed
     this.lives = 1;
-    this.canDuplicate = true;
     this.bulletList = [];
-  }
+}
 
-  draw() {
+draw() {
     ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
     // Draw the bullets fired by the alien
-    for (let i = 0; i < this.bulletList.length; i++) {
-      let bullet = this.bulletList[i];
-      bullet.draw();
+    for (let bullet of this.bulletList) {
+        bullet.draw();
     }
-  }
+}
 
-  update() {
+update() {
     this.x += this.dx;
 
     // Check if alien has reached left or right end of screen
     if (this.x + this.width > width || this.x < 0) {
-      this.dx = -this.dx; // reverse horizontal direction
-      this.y += this.dy; // move down
+        this.dx = -this.dx; // reverse horizontal direction
+        this.y += this.dy; // move down
     }
 
-    // Check if the first row of aliens has reached the middle of the screen
-    if (this.y + this.height >= height / 2 && this.canDuplicate) {
-      // Duplicate into a new row of aliens
-      for (let i = 0; i < 5; i++) {
-        let newAlien = new Alien(this.image, 50 + i * 100, 50);
-        newAlien.canDuplicate = false;
-        alienList.push(newAlien);
-      }
+    // Check if alien has reached bottom of screen
+    if (this.y + this.height >= height) {
+        endGame(); // Call function to end the game
     }
 
     // Fire a bullet randomly
     if (Math.random() < 0.005) {
-      this.fireBullet();
+        this.fireBullet();
     }
 
     // Update the bullets fired by the alien
-    for (let i = 0; i < this.bulletList.length; i++) {
-      let bullet = this.bulletList[i];
-      bullet.update();
-      let hit = detectHit(player, bullet)
-      if (bullet.y > height) {
-        this.bulletList.splice(i, 1); // Remove the bullet if it goes out of screen
-      } else {
-        // Check for collision with player bullets
-        for (let j = 0; j < player.bulletList.length; j++) {
-          let playerBullet = player.bulletList[j];
-          if (this.checkCollisionWithBullet(playerBullet)) {
-            // Remove player bullet and destroy alien
-            player.bulletList.splice(j, 1);
-            this.destroy();
-          }
+    for (let i = this.bulletList.length - 1; i >= 0; i--) {
+        let bullet = this.bulletList[i];
+        bullet.update();
+        let hit = detectHit(player, bullet);
+        if (bullet.y > height) {
+            this.bulletList.splice(i, 1); // Remove the bullet if it goes out of screen
+        } else {
+            // Check for collision with player bullets
+            for (let j = player.bulletList.length - 1; j >= 0; j--) {
+                let playerBullet = player.bulletList[j];
+                if (this.checkCollisionWithBullet(playerBullet)) {
+                    // Remove player bullet and destroy alien
+                    player.bulletList.splice(j, 1);
+                    this.destroy();
+                }
+            }
         }
-      }
     }
-  }
+}
 
-  fireBullet() {
-    let bullet = new Bullet(this.x + this.width / 2, this.y + this.height, 1)// Create a new bullet at the center of the alien
+fireBullet() {
+    let bullet = new Bullet(this.x + this.width / 2, this.y + this.height, 1);// Create a new bullet at the center of the alien
     this.bulletList.push(bullet); // Add the bullet to the list of bullets fired by the alien
-  }
+}
 
-  checkCollisionWithBullet(bullet) {
+checkCollisionWithBullet(bullet) {
     if (!bullet) {
-      return false;
+        return false;
     }
     return (
-      bullet.x < this.x + this.width &&
-      bullet.x + bullet.width > this.x &&
-      bullet.y < this.y + this.height &&
-      bullet.y + bullet.height > this.y
+        bullet.x < this.x + this.width &&
+        bullet.x + bullet.width > this.x &&
+        bullet.y < this.y + this.height &&
+        bullet.y + bullet.height > this.y
     );
-  }
-
-
-  destroy() {
+}
+destroy() {
     if (this.canDuplicate) {
-      // Duplicate into two new aliens
-      let newAlien1 = new Alien(this.image, this.x, this.y);
-      newAlien1.canDuplicate = false;
-      let newAlien2 = new Alien(this.image, this.x, this.y);
-      newAlien2.canDuplicate = false;
-      alienList.push(newAlien1);
-      alienList.push(newAlien2);
+        // Duplicate into two new aliens
+        let newAlien1 = new Alien(this.image, this.x, this.y);
+        newAlien1.canDuplicate = false;
+        let newAlien2 = new Alien(this.image, this.x, this.y);
+        newAlien2.canDuplicate = false;
+        alienList.push(newAlien1);
+        alienList.push(newAlien2);
     }
     // Remove current alien from list
     let index = alienList.indexOf(this);
     if (index !== -1) {
-      alienList.splice(index, 1);
+        alienList.splice(index, 1);
     }
-    // Increase score
-    //score.innerHTML = parseInt(score.innerHTML) + 100;
-  }
+}
 }
 
 // create array of aliens to add a row of aliens 
 let alienList = [];
-for (let i = 0; i < 5; i++) {
-  let alien = new Alien(alienImage, i * 60 + 50, 0);
-  alienList.push(alien);
-}
+
 // function to add new row of alien in loop when reach bottom of the screen 
 function createAlienRow(startX, startY, numAliens) {
-  let aliens = [];
+let aliens = [];
 
-  for (let i = 0; i < numAliens; i++) {
+for (let i = 0; i < 6; i++) {
     let alien = new Alien(alienImage, startX + i * 60, startY);
     aliens.push(alien);
-  }
-
-  return aliens;
 }
+
+return aliens;
+}
+
+// add first row every 5 seconds
+setInterval(function() {
+let newAliens = createAlienRow(50, 0, 6);
+alienList = alienList.concat(newAliens);
+}, 5000);
+
+setInterval(function() {
+let newAliens = createAlienRow(50, 0, 6);
+alienList = alienList.concat(newAliens);
+}, 10000);
+
 
 /***************** add class player with playerImg **********************/
 class Player {
@@ -337,6 +336,15 @@ function addNewPlayer() {
   return true;
 }
 
+function addNewAlien() {
+  alien.alive = false;
+  // use setTimeout to create a new player after 1 second (1000 miliseconds)
+  setTimeout(function() {
+      alien = new Alien(alienImage);
+  }, 1000);
+  return true;
+}
+
 // ====================== GAME PROCESSES ======================= //
 function gameLoop() {
   //clear canvas
@@ -355,14 +363,6 @@ function gameLoop() {
       let hit = detectHit(player, alien);
     }
   }
-
-  // Update and draw the aliens
-  /* for (let i = 0; i < alienList.length; i++) {
-    let alien = alienList[i];
-    alien.update();
-    alien.draw();
-  }*/
-
   // Update and draw the player bullets
   for (let i = 0; i < playerBullets.length; i++) {
     let bullet = playerBullets[i];
@@ -444,3 +444,5 @@ if (score.textContent === '0') {
 gameStatus.textContent = 'Keep playing';
 }
 
+
+// create div then go to css
