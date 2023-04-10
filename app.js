@@ -51,15 +51,42 @@ class Bullet {
     this.y += this.dy;
   }
 
+  destroy() {
+    // Remove bullet from list of active bullets
+    let index = bulletList.indexOf(this);
+    if (index !== -1) {
+      bulletList.splice(index, 1);
+    }
+  }
+}
+
+class PlayerBullet {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.width = 5;
+    this.height = 5;
+    this.color = "blue";
+    this.dy = 10; // vertical speed
+  }
+
+  draw() {
+    ctx.beginPath();
+    ctx.fillStyle = '#4FFFF6';
+    ctx.rect(this.x, this.y, this.width, this.height);
+    ctx.fill();
+    ctx.closePath();
+  }
+
   update2() {
     this.y -= this.dy;
   }
 
   destroy() {
     // Remove bullet from list of active bullets
-    let index = bulletList.indexOf(this);
+    let index = playerBulletList.indexOf(this);
     if (index !== -1) {
-      bulletList.splice(index, 1);
+      playerBulletList.splice(index, 1);
     }
   }
 }
@@ -199,7 +226,7 @@ class Player {
     this.dy = 0; // vertical speed
     this.speed = 20; // movement speed
     this.bulletList = [];
-    this.playerBullets = [];
+    //this.playerBullets = [];
     this.alive = true;
     this.score = 0;
   }
@@ -245,7 +272,7 @@ class Player {
 
   fireBullet() {
     // Create new bullet
-    let bullet = new Bullet(this.x + this.width / 2, this.y, -5); // Create a new bullet at the center of the player and move it upwards
+    let bullet = new PlayerBullet(this.x + this.width / 2, this.y, -5); // Create a new bullet at the center of the player and move it upwards
     //let bullet = new Bullet(this.x + this.width / 2, this.y + this.height, 1); 
     playerBullets.push(bullet); // Add the bullet to the list of player bullets
   }
@@ -293,6 +320,7 @@ let player = new Player(playerImg, width / 2 - 25, height - 75);
 // declare bulletlist array 
 let bulletList = [];
 let playerBullets = [];
+let playerBulletList = [];
 
 // ====================== KEYBOARD LOGIC  ======================= //
 window.addEventListener('keydown', movePlayer);
