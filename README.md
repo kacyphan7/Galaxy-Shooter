@@ -28,11 +28,11 @@ This project was modeled off of Galaga for nostalgic purposes. It was my favorit
 
 # HOW IT WORKS
 
-This code is an implementation of a simple 2D shooting game. Galaxy Shooter is built using HTML, CSS, and JavaScript. The game uses the HTML5 Canvas API to update the game graphics and handle player input. JavaScript is used to manage the game state, including tracking the player's score, lives, and level. The game is played by controlling a spaceship to shoot down aliens while dodging their bullets. The main logic of the game is handled in a function called `gameLoop`, which is called every 60 milliseconds using the `setInterval` method.
-
-The game has three main entities: the player spaceship, the alien spaceships, and bullets. The player spaceship is controlled using the arrow keys and fires bullets vertically upward by pressing the space bar. The alien spaceships are automatically generated at the top of the screen and move horizontally across the screen, firing bullets downwards randomly. The game ends if the player's spaceship is hit by an alien bullet or if an alien spaceship reaches the bottom of the screen.
+This code is an implementation of a simple 2D shooting game. Galaxy Shooter is built using HTML, CSS, and JavaScript. The game uses the HTML5 Canvas API to update the game graphics and handle player input. JavaScript is used to manage the game state, including tracking the player's score, lives, and level. The game is played by controlling a spaceship to shoot down aliens while dodging their bullets. The main logic of the game is handled in a function called `gameLoop`, which is called every 60 milliseconds using the `setInterval` me
 
 The code creates three classes to handle the entities: `Player`, `Alien`, and `Bullet`. `Player` handles the player spaceship, `Alien` handles the alien spaceships, and `Bullet` handles the bullets fired by both the player and the aliens.
+
+The player spaceship is controlled using the `arrow keys or wasd` and fires bullets `vertically` upward by pressing the `space bar`. The alien spaceships are automatically generated at the top of the screen and move `horizontally` across the screen, firing bullets downwards randomly. The game ends if the player's spaceship is hit by an alien bullet or if an alien spaceship reaches the bottom of the screen.
 
 Draw bullet 
 ``` javascript
@@ -62,8 +62,6 @@ destroy() {
 ```
 
 The `Player` class handles the player's spaceship. The `Alien` class handles the alien spaceships, including generating them and moving them across the screen. The `Bullet` class handles the bullets fired by both the player and the aliens.
-
-The code uses HTML canvas and the `getContext` method to create a game board. The `draw` and `update` methods are used to draw the entities on the canvas and update their positions in the game.
 
 In the game, players must defend against a row of alien enemies that will descend towards the screen every 5 seconds. Additionally, a new row of aliens will appear every 10 seconds, creating a continuous loop until the game is over using the `setInterval` method.
 
@@ -103,7 +101,7 @@ setInterval(function () {
 
 The game detects collisions between entities using the `detectHit` function. The game also displays the player's score and updates it as they shoot down aliens.
 
-In summary, this code creates a simple 2D shooting game where the player controls a spaceship to shoot down aliens while dodging their bullets. The game is played on an HTML canvas using the `draw` and `update` methods to create and move the entities.
+In summary, this code creates a simple 2D shooting game where the player controls a spaceship to shoot down aliens while dodging their bullets. The game is played on an HTML canvas and the `getContext` method to create a game board. using the `draw` and `update` methods to create and move the entities.
 
 # FUTURE ENHANCEMENT
 - Dynamic score labels for level and waves
