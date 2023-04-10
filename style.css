@@ -1,13 +1,13 @@
 canvas {
     margin-top: 50px;
-    /* background-color: black; */
     background-image: url('./Img/galaxy-red-orange.png');
     background-color: rgba(0, 0, 0, 0.5);
+    color: white;
 }
 
 body {
     background-image: url('./Img/galaxy-red-orange.png');
-    color: white
+    color: white;
 }
 
 h1 {
@@ -21,13 +21,45 @@ h1 {
     position: absolute;
     display: grid;
     bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
     grid-template-columns: 50px 150px;
     color: lightgrey;
     justify-content: center;
     align-items: center;
 }
 
-button {
-    cursor: pointer;
+#score {
+    position: absolute;
+    top: 10px;
+    right: calc(50% + 200px);
+    transform: translateX(-50%);
+    display: inline-block;
+}
 
-  }
+#gameStatus {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: inline-block;
+}
+
+#restartBtn {
+    background-color: transparent;
+    color: #f0ffff;
+    border: 1px solid #f0ffff;
+    padding: 5px 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    position: absolute;
+    top: 34px;
+    left: calc(50% + 260px);
+    transform: translateX(-50%);
+    display: inline-block;
+}
+
+#restartBtn:hover {
+    background-color: #f0ffff;
+    color: black;
+}
