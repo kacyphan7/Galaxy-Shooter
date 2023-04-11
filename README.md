@@ -29,6 +29,10 @@ I do not own any of the images. Please reference to Credits section below for re
 2. Open `index.html` in your browser to play or
 3. Open the directory in your text editor of choice to view or edit the code
 
+# Start Screen 
+
+![My Image](./Img/g-s%20gameplay.png)
+
 # HOW IT WORKS
 
 This code is an implementation of a simple 2D shooting game. Galaxy Shooter is built using HTML, CSS, and JavaScript. The game uses the HTML5 Canvas API to update the game graphics and handle player input. JavaScript is used to manage the game state, including tracking the player's score, lives, and level. The game is played by controlling a spaceship to shoot down aliens while dodging their bullets. The main logic of the game is handled in a function called `gameLoop`, which is called every 60 milliseconds using the `setInterval` method.
