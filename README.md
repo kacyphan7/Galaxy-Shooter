@@ -119,7 +119,7 @@ In summary, this code creates a simple 2D shooting game where the player control
 # PROCESS WORK
 
 ### Initial Wireframes:
- ![My Image](./screenshots/escalidraw-wireframe.png?raw=true)
+ ![My Image](./Img/screenshots/escalidraw-wireframe.png)
 
 # Credits 
 
