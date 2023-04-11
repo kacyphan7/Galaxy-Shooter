@@ -171,26 +171,26 @@ class Alien {
   }
   destroy() {
     // Increase player score by alien's score
-    player.score += this.score;
+    player.score += 100;
 
-    // Update score display on the webpage
-    score.textContent = player.score;
+     // Update score display on the webpage
+  score.textContent = player.score;
 
-    if (this.canDuplicate) {
-      // Duplicate into two new aliens
-      let newAlien1 = new Alien(this.image, this.x, this.y);
-      newAlien1.canDuplicate = false;
-      let newAlien2 = new Alien(this.image, this.x, this.y);
-      newAlien2.canDuplicate = false;
-      alienList.push(newAlien1);
-      alienList.push(newAlien2);
-    }
-    // Remove current alien from list
-    let index = alienList.indexOf(this);
-    if (index !== -1) {
-      alienList.splice(index, 1);
-    }
+  if (this.canDuplicate) {
+    // Duplicate into two new aliens
+    let newAlien1 = new Alien(this.image, this.x, this.y);
+    newAlien1.canDuplicate = false;
+    let newAlien2 = new Alien(this.image, this.x, this.y);
+    newAlien2.canDuplicate = false;
+    alienList.push(newAlien1);
+    alienList.push(newAlien2);
   }
+  // Remove current alien from list
+  let index = alienList.indexOf(this);
+  if (index !== -1) {
+    alienList.splice(index, 1);
+  }
+}
 }
 
 // create array of aliens to add a row of aliens 
@@ -535,6 +535,4 @@ function endGame() {
   score.textContent = 0;
 }
 
-//let gameInterval;
-
-
+let gameInterval;
