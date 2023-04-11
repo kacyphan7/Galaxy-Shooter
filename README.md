@@ -29,7 +29,7 @@ I do not own any of the images. Please reference to Credits section below for re
 2. Open `index.html` in your browser to play or
 3. Open the directory in your text editor of choice to view or edit the code
 
-# Start Screen 
+## GAME SCREEN
 
 ![My Image](./Img/g-s%20gameplay.png)
 
