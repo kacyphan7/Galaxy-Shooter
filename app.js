@@ -36,7 +36,7 @@ class Bullet {
     this.width = 5;
     this.height = 5;
     this.color = "yellow";
-    this.dy = 10; // vertical speed
+    this.dy = 15; // vertical speed
   }
 
   draw() {
@@ -67,7 +67,7 @@ class PlayerBullet {
     this.width = 5;
     this.height = 5;
     this.color = "blue";
-    this.dy = 10; // vertical speed
+    this.dy = 15; // vertical speed
   }
 
   draw() {
@@ -170,6 +170,12 @@ class Alien {
     );
   }
   destroy() {
+    // Increase player score by alien's score
+    player.score += this.score;
+
+    // Update score display on the webpage
+    score.textContent = player.score;
+
     if (this.canDuplicate) {
       // Duplicate into two new aliens
       let newAlien1 = new Alien(this.image, this.x, this.y);
@@ -191,7 +197,7 @@ class Alien {
 let alienList = [];
 
 // function to add new row of alien in loop when reach bottom of the screen 
-function createAlienRow(startX, startY, numAliens) {
+function createAlienRow(startX, startY) {
   let aliens = [];
 
   for (let i = 0; i < 6; i++) {
@@ -208,6 +214,7 @@ setInterval(function () {
   alienList = alienList.concat(newAliens);
 }, 5000);
 
+// add first row every 10 seconds
 setInterval(function () {
   let newAliens = createAlienRow(50, 0, 6);
   alienList = alienList.concat(newAliens);
@@ -383,6 +390,12 @@ function gameLoop() {
     player.update();
     player.draw();
 
+    // Check if player has reached 1 million points
+    if (player.score >= 1000000) {
+      winGame();
+      return;
+    }
+
     // Update and draw the aliens
     for (let i = 0; i < alienList.length; i++) {
       let alien = alienList[i];
@@ -425,6 +438,16 @@ function gameLoop() {
       //status.innerHTML = 'Game Over';
       return;
     }
+    function winGame() {
+      // Display the winning message
+      gameStatus.textContent = "You won!";
+
+      // Stop the game loop
+      clearInterval(gameLoop);
+
+      // Disable player movement
+      document.removeEventListener('keydown', movePlayer);
+    }
   }
   canvas.focus();
 }
@@ -441,20 +464,43 @@ function detectHit(player, opponent) {
   );
 
   if (hitTest) {
-    // Add 100 points to current score 
-    let newScore = Number(score.textContent) + 100;
-    score.textContent = newScore;
-
-    // Check if player has lives left
-    if (player.lives <= 0) {
+    if (opponent instanceof Alien) {
+      // Add 100 points to current score 
+      let newScore = Number(score.textContent) + 100;
+      score.textContent = newScore;
+    } else if (opponent instanceof Bullet) {
       // Game over, restart game
       //alert('Game over!');
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      restartGame();
+      endGame();
+
       return;
     }
-    // Return true if hit
     return true;
+  }
+
+  // check if player bullet hit opponent
+  if (player.bullets && player.bullets.length > 0) {
+    for (let i = 0; i < player.bullets.length; i++) {
+      let bullet = player.bullets[i];
+      if (bullet.y < 0) {
+        player.bullets.splice(i, 1);
+        continue;
+      }
+      if (bullet.x + bullet.width > opponent.x && bullet.x < opponent.x + opponent.width && bullet.y < opponent.y + opponent.height && bullet.y + bullet.height > opponent.y) {
+        // Remove bullet from player bullets array
+        player.bullets.splice(i, 1);
+
+        if (opponent instanceof Alien) {
+          // Add 100 points to current score 
+          let newScore = Number(score.textContent) + 100;
+          score.textContent = newScore;
+        }
+
+        return true;
+      }
+
+    }
   }
 }
 
@@ -474,17 +520,21 @@ function restartGame() {
 restartButton.addEventListener('click', restartGame);
 
 function endGame() {
-  gameStatus.innerHTML = 'Game Over!';
+  gameStatus.innerHTML = 'Game Over! Alien Won!';
+  // Clear the screen
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  setTimeout(() => {
+    gameStatus.innerHTML = 'Play the Game';
+  }, 1000);
+
   player.destroy();
   alienList = [];
   bulletList = [];
   clearInterval(gameInterval);
   score.textContent = 0;
-
-  setTimeout(() => {
-    gameStatus.innerHTML = 'Play the Game';
-  }, 1500);
 }
 
-let gameInterval;
-// create div then go to css
+//let gameInterval;
+
+
