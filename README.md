@@ -110,11 +110,13 @@ In summary, this code creates a simple 2D shooting game where the player control
 
 # FUTURE ENHANCEMENT
 - Dynamic score labels for level and waves
-- Bombs
+- Big Boss
 - Machine gun power up 
 - Spaceship sprite animation 
 - Start and game over UI 
+- Pause game 
 - Sound effects and music 
+- Background parallax effect
 
 # PROCESS WORK
 
