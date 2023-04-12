@@ -7,7 +7,7 @@ A space invader game inspired by Galaga.
 
 Prepare to lead your sky force into a fierce space battle and maneuver through a chaotic assault in our alien shooter game! With only you and your space team as the galaxy's last hope, it's up to you to restore peace and fend off the alien invaders! Fire away and repel their attacks on the galaxy!
 
-To play Galaxy Shooter online visit kacyphan7.github.io 
+To play Galaxy Shooter online visit https://galaxy-shooter23.netlify.app/
 
 # HOW TO PLAY
 1. Use the `arrow keys` or `wasd` to move your starship around the screen.

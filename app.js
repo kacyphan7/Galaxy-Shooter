@@ -491,7 +491,7 @@ function detectHit(player, opponent) {
           // Add 100 points to current score 
           let newScore = Number(score.textContent) + 100;
           score.textContent = newScore;
-          if (newScore >= 1000) {
+          if (newScore = 1000) {
             endGame();
           }
         }
