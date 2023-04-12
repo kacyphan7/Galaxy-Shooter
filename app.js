@@ -315,6 +315,7 @@ class Player {
       this.y = height - 100;
       this.dx = 0;
       this.dy = 0;
+      this.score = 0;
     }
   }
   reset() { // restes the player's position, speed, bullet list, and score
@@ -559,7 +560,7 @@ function restartGame() {
 }
 
 restartButton.addEventListener('click', restartGame);
-console.log(restartButton);
+//console.log(restartButton);
 
 function endGame() {
   if (Number(score.textContent) >= 1000) {
