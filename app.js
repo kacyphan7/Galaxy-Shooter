@@ -496,14 +496,26 @@ function detectHit(player, opponent) {
   );
 
   if (hitTest) { // check if hitTest is true. 
+    /*if (opponent instanceof Alien) { // If opponent instance of alien clears the canvas
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Add this code to check if score is greater than or equal to 1000 and end game if true
+      let newScore = Number(score.textContent) + 100;
+      score.textContent = newScore;
+      if (newScore >= 1000) {
+        gameStatus.innerHTML = 'Congratulations! You won!';
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        endGame(); 
+      }*/
     if (opponent instanceof Alien) { // If opponent instance of alien clears the canvas
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       endGame();  // end the game and retrue true
+        return true;
     } else if (opponent instanceof Bullet) { // if opponent instance of bullet clears the canvas
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       endGame(); // end the game and retrue true
 
-      return;
+      //return;
     }
     return true;
   }
@@ -547,9 +559,15 @@ function restartGame() {
 }
 
 restartButton.addEventListener('click', restartGame);
+console.log(restartButton);
 
 function endGame() {
-  gameStatus.innerHTML = 'Game Over! Alien Won!';
+  if (Number(score.textContent) >= 1000) {
+    gameStatus.innerHTML = 'Congratulations! You won!';
+  } else {
+    gameStatus.innerHTML = 'Game Over! Alien Won!';
+  }
+
   // Clear the screen
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 

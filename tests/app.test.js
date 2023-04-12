@@ -1,6 +1,6 @@
 describe("Bullet", function() {
   let bullet;
-
+console.log(restartButton);
   beforeEach(function() {
     bullet = new Bullet(10, 10);
   });

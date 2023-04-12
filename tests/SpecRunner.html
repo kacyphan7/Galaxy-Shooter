@@ -13,12 +13,32 @@
     <script class='jasmine' src="https://cdnjs.cloudflare.com/ajax/libs/jasmine/3.6.0/boot.min.js"></script>
 </head>
 <body>
+    <div class="imageContainer">
+        <img src="./Img/spaceShip-yellow-blue.png" alt="spaceShip-yellow-blue" id="ship" style="display: none;">
+        <img src="./Img/alien-cyberBlade.png" alt="alien-cyberBlade" id="alien" style="display: none;">
+        <img src="./Img/bullets.png" alt="bullets" id="bullets" style="display: none;">
+    </div>
+    <div id="container">
+        <aside id="top-left">
+        </aside>
+        <aside id="top-right">
+            <h2 id="movement"></h2>
+        </aside>
+        <span class="controls">
+            <div>Move</div>
+            <div>Arrow Keys or WASD</div>
+            <div>Shoot</div>
+            <div>Space Bar</div>
+        </span>
+        <h2 id="gameStatus">Play the Game</h2>
+        <button id="restartBtn">Restart</button>
+        <h2 id="score">0</h2>
     <canvas id="game" width="600" height="750" style="display: block; margin: auto;"><!-- play it, a game --></canvas>
     <!-- Includes files that are being tested -->
-    <script src="./app.js"></script>
+    <script src="../app.js"></script>
 
     <!-- INCLUDE SPEC FILES HERE -->
-    <script src="./tests/app.test.js"></script>
+    <script src="./app.test.js"></script>
 </body>
 
 </html>
