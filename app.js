@@ -389,30 +389,6 @@ function addNewAlien() {
   return true;
 }
 
-// ====================== WIN FUNCTION ======================= //
-
-/* function winGame() {
-  // Display the winning message
-  gameStatus.textContent = "You won!";
-
-  // Stop the game loop
-  clearInterval(gameInterval);
-
-  // Disable player movement
-  document.removeEventListener('keydown', movePlayer);
-
-  // Clear canvas
-  ctx.clearRect(0, 0, width, height);
-
-  // Reset player, bullets, and aliens
-  player = new Player();
-  playerBullets = [];
-  alienList = [];
-
-  // Restart game
-  restartGame();
-} */
-
 // ====================== GAME PROCESSES ======================= //
 function gameLoop() {
   //clear canvas
@@ -424,10 +400,10 @@ function gameLoop() {
     player.draw();
 
     // Check if player has reached 1 thousand points
-    /* if (player.score >= 1000) {
-      winGame();
+    if (player.score >= 1000) {
+      endGame();
       return;
-    } */
+    } 
 
     // Update and draw the aliens
     for (let i = 0; i < alienList.length; i++) { // loops through each alien in the alienList array 
@@ -471,16 +447,6 @@ function gameLoop() {
       //status.innerHTML = 'Game Over';
       return;
     }
-    /* function winGame() {
-      // Display the winning message
-      gameStatus.textContent = "You won!";
-
-      // Stop the game loop
-      clearInterval(gameLoop);
-
-      // Disable player movement
-      document.removeEventListener('keydown', movePlayer);
-    } */
   }
   canvas.focus(); // set focus back to canvas
 }
@@ -497,25 +463,13 @@ function detectHit(player, opponent) {
   );
 
   if (hitTest) { // check if hitTest is true. 
-    /*if (opponent instanceof Alien) { // If opponent instance of alien clears the canvas
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      // Add this code to check if score is greater than or equal to 1000 and end game if true
-      let newScore = Number(score.textContent) + 100;
-      score.textContent = newScore;
-      if (newScore >= 1000) {
-        gameStatus.innerHTML = 'Congratulations! You won!';
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        endGame(); 
-      }*/
     if (opponent instanceof Alien) { // If opponent instance of alien clears the canvas
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       endGame();  // end the game and retrue true
-        return true;
+      return true;
     } else if (opponent instanceof Bullet) { // if opponent instance of bullet clears the canvas
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       endGame(); // end the game and retrue true
-
       //return;
     }
     return true;
@@ -537,6 +491,9 @@ function detectHit(player, opponent) {
           // Add 100 points to current score 
           let newScore = Number(score.textContent) + 100;
           score.textContent = newScore;
+          if (newScore >= 1000) {
+            endGame();
+          }
         }
 
         return true;
@@ -563,24 +520,32 @@ restartButton.addEventListener('click', restartGame);
 //console.log(restartButton);
 
 function endGame() {
+  // Stop the game at 1000 points
   if (Number(score.textContent) >= 1000) {
     gameStatus.innerHTML = 'Congratulations! You won!';
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
   } else {
     gameStatus.innerHTML = 'Game Over! Alien Won!';
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
   }
 
-  // Clear the screen
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+  // Reset game after a brief delay
   setTimeout(() => {
     gameStatus.innerHTML = 'Play the Game';
+    player.destroy();
+    alienList = [];
+    bulletList = [];
+    clearInterval(gameInterval);
+    score.textContent = 0;
   }, 1000);
-
-  player.destroy();
-  alienList = [];
-  bulletList = [];
-  clearInterval(gameInterval);
-  score.textContent = 0;
 }
 
 let gameInterval;
+
+function checkWin(score) {
+  if (Number(score.textContent) >= 1000) {
+    gameStatus.innerHTML = 'Congratulations! You won!';
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    endGame();
+  }
+}
